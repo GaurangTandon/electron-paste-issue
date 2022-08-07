@@ -1,8 +1,9 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, clipboard} = require('electron')
 const path = require('path')
+const { Key, keyboard } = require('@nut-tree/nut-js');
 
-function createWindow () {
+async function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -13,10 +14,24 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  await mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
+
+  console.log('Switch to Notepad in 5seconds to see demo');
+  setTimeout(doClipboard, 5000);
+}
+
+const superKey = process.platform === 'darwin' ? Key.LeftSuper : Key.LeftControl;
+const pasteShortcut = [superKey, Key.V];
+
+async function doClipboard() {
+  console.log('Starting clipboard demo');
+  clipboard.write({ text: 'This should be pasted', html: '<b>bold stuff</b>' });
+  await keyboard.pressKey(...pasteShortcut);
+  await keyboard.releaseKey(...pasteShortcut);
+  clipboard.write({ text: 'This should NOT be pasted', html: '<b>do not paste bold stuff</b>' });
 }
 
 // This method will be called when Electron has finished
