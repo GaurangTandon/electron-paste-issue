@@ -1,1 +1,5 @@
 
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    open-pull-requests-limit: 0
