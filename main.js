@@ -2,6 +2,7 @@
 const {app, BrowserWindow, clipboard} = require('electron')
 const path = require('path')
 const { Key, keyboard } = require('@nut-tree/nut-js');
+keyboard.config.autoDelayMs = 1;
 
 async function createWindow () {
   // Create the browser window.
@@ -28,10 +29,12 @@ const pasteShortcut = [superKey, Key.V];
 
 async function doClipboard() {
   console.log('Starting clipboard demo');
-  clipboard.write({ text: 'This should be pasted', html: '<b>bold stuff</b>' });
-  await keyboard.pressKey(...pasteShortcut);
-  await keyboard.releaseKey(...pasteShortcut);
-  clipboard.write({ text: 'This should NOT be pasted', html: '<b>do not paste bold stuff</b>' });
+  for (let i = 0; i < 1000; i++) {
+    clipboard.write({ text: i + 'This should be pasted\n', html: i + '<b>bold stuff</b><br>' });
+    await keyboard.pressKey(...pasteShortcut);
+    await keyboard.releaseKey(...pasteShortcut);
+    clipboard.write({ text: i + 'This should NOT be pasted\n', html: i + '<b>do not paste bold stuff</b><br>' });
+  }
 }
 
 // This method will be called when Electron has finished
